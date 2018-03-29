@@ -1,2 +1,2 @@
-database.py
-send_email_config.py
+__pycache__/
+.envrc

@@ -1,66 +1,51 @@
 #!/usr/bin/env python3
 
 import sys
-import psycopg2
-from send_email import send_email
-from database import *
+import os.path
+from send_email import Send_Email
+from string import Template
+from db import DB
 
-try:
-    conn = psycopg2.connect(database=DBNAME, user=DBUSER, host=DBHOST)
-except:
-    print('Błąd dostępu do bazy danych')
-    sys.exit(1)
+# import ipdb; ipdb.set_trace()
 
-cur = conn.cursor()
+def main():
 
+    # initialize database
+    db = DB()
 
-def status_change(id):
-    "disable contract"
-    cur.execute("update est set status=1 where id={}".format(id))
+    # initialize send mail class
+    send_email = Send_Email()
+    
+    # load template
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    body_file = open(os.path.join(dirname, 'templates', 'notification.txt'), 'r')
+    body_content = body_file.read()
 
+    # get contracts close to expire 
+    week_left = db.query("""select id from est where wyl > now() and 
+    wyl < now() + '1 week'::interval and status=0""")
 
-# contracts close to expire 
-cur.execute("""select id from est where wyl > now() and 
-               wyl < now() + '1 week'::interval and status=0""")
-week_left = cur.fetchall()
+    # get expired contracts
+    expired = db.query("""select id from est where wyl < now() and status=0""")
 
-# expired contracts
-cur.execute("select id from est where wyl < now() and status=0")
-expired = cur.fetchall()
+    oferty = ''
+    
+    for row in week_left:
+        oferty += "- {} \n".format(row[0])
 
-subject = "kończy się wyłączność oferty"
-body = "Kończy się umowa na wyłączność oferty:\n" 
+    body_template = Template(body_content)
+    body = body_template.substitute(oferty=oferty)
 
-for row in week_left:
-    body += "- {} \n".format(row[0])
+    subject = 'kończące się wyłączności' 
 
-if expired:
-    body += "\nUmowy zakończone:\n"
+    # get user email to notify
+    emails = db.query("""select nazwa_pelna, email2 from users where aktywna='t'""")
+    email_to = [email[0] + ' <' + email[1] + '>' for email in emails]
 
-    for row in expired:
-        body += "- {} \n".format(row[0])
-        # disable expired contracts
-        status_change(row[0])
+    # notify users
+    send_email.send(email_to, subject, body)
+    send_email.quit()
+    
 
-        # commit changes
-        conn.commit()
-
-body += "\nOferty zostaną wkrótce wyłączone\n"
-
-# notify users
-
-# get user email to notify
-cur.execute("""select email2 from users where aktywna='t'""")
-rows = cur.fetchall()
-
-email_to = []
-
-for email in rows:
-    email_to.append(email[0])
-
-# send_email(email_to, subject, body)
-
-print(body)
-
-cur.close()
-conn.close()
+if __name__ == '__main__':
+    main()
