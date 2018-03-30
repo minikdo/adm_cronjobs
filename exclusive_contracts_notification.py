@@ -21,7 +21,7 @@ def main():
     expired = db.query("""select id from est where wyl < now() and status=0""")
 
     if not week_left and not expired:
-        print("brak ofert")
+        # print("brak ofert")
         exit(0)
 
     week_left_ids = ''
@@ -38,7 +38,7 @@ def main():
     # generate mail
     body = generate_mail(week_left_ids, expired_ids)
 
-    subject = 'kończące się wyłączności' 
+    subject = 'kończące się umowy' 
 
     # notify users by mail
     notify(db, subject, body)
@@ -68,9 +68,6 @@ def notify(db, subject, body):
     # get user email to notify
     emails = db.query("""select nazwa_pelna, email2 from users where aktywna='t'""")
     email_to = [email[0] + ' <' + email[1] + '>' for email in emails]
-
-    # test
-    email_to = ['domino@dominowisla.pl']
     
     # send mail to active users
     send_email.send(email_to, subject, body)
