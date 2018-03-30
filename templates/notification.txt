@@ -1,7 +1,7 @@
+Umowy kończące się w ciągu 7 dni:
 
-Kończy się umowa na wyłączność ofert:
+$week_left_ids
 
-$oferty
+Umowy zakónczone:
 
-Zrób cośtam
-
+$expired_ids
