@@ -63,7 +63,7 @@ def generate_mail(week_left_ids, expired_ids):
 def notify(db, subject, body):
 
     # initialize send mail class
-    send_email = Send_Email()
+    send_email = SendEmail()
 
     # get user email to notify
     emails = db.query("""select nazwa_pelna, email2 from users where aktywna='t'""")

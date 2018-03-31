@@ -10,6 +10,7 @@ class DB():
     with open('database.json') as f:
         config = json.loads(f.read())
 
+
     def __init__(self):
         self.conn = self.connect(
             self.config['adm']['NAME'],
@@ -22,6 +23,7 @@ class DB():
         self.cur = self.conn.cursor()
         self.cur2 = self.conn2.cursor()
 
+
     def connect(self, name, user, host):
         try:
             return psycopg2.connect(
@@ -32,15 +34,18 @@ class DB():
             print('db {} at {} connect error'.format(name, host))
             sys.exit(1)
 
+
     def query(self, query):
         self.cur.execute(query)
         return self.cur.fetchall()
+
 
     def change_status(self, id, status):
         self.cur.execute("update est set status={} where id={}".format(status, id))
         self.cur2.execute("update oferty_est set status={} where id={}".format(status, id))
         self.conn.commit()
         self.conn2.commit()
+
 
     def close(self):
         self.cur.close()

@@ -3,11 +3,12 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-class Send_Email():
+class SendEmail():
     SMTP_HOST = os.environ['SMTP_HOST']
     SMTP_PORT = os.environ['SMTP_PORT']     
     EMAIL_FROM = os.environ['EMAIL_FROM']    
     EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+
     
     def __init__(self):
         self.server = smtplib.SMTP(self.SMTP_HOST, self.SMTP_PORT)
