@@ -15,7 +15,9 @@ class NotificationManager:
 
 
     def get_ids(self, query):
-        return self.db.query(query)
+        # get contract ids
+        return self.db.query("""select id from est 
+        where status=0 and {}""".format(query))
 
 
     def generate_body(self, template, ids):

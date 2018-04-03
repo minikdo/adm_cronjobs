@@ -4,7 +4,7 @@ from notification_manager import NotificationManager
 def main():
     nm = NotificationManager()
 
-    ids = nm.get_ids("""select id from est where wyl < now() and status=0""")
+    ids = nm.get_ids("wyl < now()")
     template = 'expired'
     subject = 'umowy zakończone'
     
