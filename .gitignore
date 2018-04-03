@@ -1,3 +1,6 @@
 __pycache__/
 .envrc
 database.json
+exclusive_contracts_notification.py
+exclusive_contracts_notification_bak.py
+

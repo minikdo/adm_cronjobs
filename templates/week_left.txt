@@ -1,0 +1,3 @@
+Umowy, które kończą się do 7 dni:
+
+$ids

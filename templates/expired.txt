@@ -1,0 +1,4 @@
+Umowy zakończone:
+
+$ids
+

@@ -1,7 +1,0 @@
-Umowy kończące się w ciągu 7 dni:
-
-$week_left_ids
-
-Umowy zakónczone:
-
-$expired_ids
