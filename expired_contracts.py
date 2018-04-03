@@ -8,12 +8,13 @@ def main():
     
     # ids = bs.expired_ids(7)
     ids = bs.no_photo_ids()
-    
+
     email_to = bs.get_active_users()
     
     subject = 'umowy zakończone'
 
-    body = nm.generate_body('expired', ids)
+    body = nm.generate_body('expired', ids, context={'pow_label': 'pow.',
+                                                     'name_label': 'nazwa'})
     
     nm.notify(subject, body, email_to)
     

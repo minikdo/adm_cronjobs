@@ -14,7 +14,7 @@ class BackendService:
         wyl < now() + '{} days'::interval and status=0""".format(days_before))
 
     def no_photo_ids(self):
-        return self.db.query("""select id, cena, pow from est where photo=0 
+        return self.db.query("""select id, cena, pow from est where zdjecia=0 
         and status=0""")
 
     def get_active_users(self):

@@ -4,17 +4,12 @@ import sys
 import os.path
 from send_email import SendEmail
 from string import Template
-from db import DB
 
-# import ipdb; ipdb.set_trace()
 
 class NotificationManager:
 
-    EXPIRED_TEMPLATE = 'expired'
-    
     def __init__(self, template):
-        self.db = DB()
-
+        pass
 
     def get_template(self, template):
         try:
@@ -24,24 +19,28 @@ class NotificationManager:
             return body_file.read()
         except OSError as e:
             print('Error: ' + e)
-            exit(1)
+            sys.exit(1)
 
 
     def generate_ids(self, ids):
         ids_generated = ''
 
         for id in ids:
-            ids_generated += "- {}, {}, {}\n".format(*id)
+            ids_generated += "- "
 
+            for value in id:
+                ids_generated += '{}, '.format(value)
 
+            ids_generated += "\n"
 
-    
+        return ids_generated
+
 
     def generate_body(self, template, ids, context={}):
         # substitute variables
         body_content = self.get_template(template)
         body_template = Template(body_content)
-        context['ids'] = generate_ids(ids)
+        context['ids'] = self.generate_ids(ids)
         body = body_template.substitute(**context)
         
         return body

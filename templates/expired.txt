@@ -1,4 +1,5 @@
 Umowy zakończone:
 
+$pow_label $name_label
 $ids
 
