@@ -40,12 +40,6 @@ class DB():
         return self.cur.fetchall()
 
 
-    def change_status(self, id, status):
-        self.cur.execute("update est set status={} where id={}".format(status, id))
-        self.cur2.execute("update oferty_est set status={} where id={}".format(status, id))
-        self.conn.commit()
-        self.conn2.commit()
-
 
     def close(self):
         self.cur.close()

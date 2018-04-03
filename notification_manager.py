@@ -10,54 +10,47 @@ from db import DB
 
 class NotificationManager:
 
-    def __init__(self):
+    EXPIRED_TEMPLATE = 'expired'
+    
+    def __init__(self, template):
         self.db = DB()
 
 
-    def get_ids(self, query):
-        # get contract ids
-        return self.db.query("""select id from est 
-        where status=0 and {}""".format(query))
+    def get_template(self, template):
+        try:
+            # load template
+            dirname = os.path.dirname(os.path.abspath(__file__))
+            body_file = open(os.path.join(dirname, 'templates', '{}.txt'.format(template)), 'r')
+            return body_file.read()
+        except OSError as e:
+            print('Error: ' + e)
+            exit(1)
 
 
-    def generate_body(self, template, ids):
+    def generate_ids(self, ids):
+        ids_generated = ''
 
-        # load template
-        dirname = os.path.dirname(os.path.abspath(__file__))
-        body_file = open(os.path.join(dirname, 'templates', '{}.txt'.format(template)), 'r')
-        body_content = body_file.read()
-
-        ids2 = ''
-        
         for id in ids:
-            contract_data = self.db.query("""select n.nazwa, m.nazwa as miasto
-            from est e, nazwa n, miasto m 
-            where e.miasto=m.id and e.nazwa=n.id
-            and e.id = {}""".format(id[0]))
+            ids_generated += "- {}, {}, {}\n".format(*id)
 
-            ids2 += "- {}, {}, {}\n".format(
-                id[0],
-                contract_data[0][0],
-                contract_data[0][1]
-            )
-            
+
+
+    
+
+    def generate_body(self, template, ids, context={}):
         # substitute variables
+        body_content = self.get_template(template)
         body_template = Template(body_content)
-        body = body_template.substitute(ids=ids2)
-
+        context['ids'] = generate_ids(ids)
+        body = body_template.substitute(**context)
+        
         return body
 
 
-    def notify(self, template, subject, ids):
+    def notify(self, subject, body, email_to):
 
          # initialize send mail class
          send_email = SendEmail()
-
-         # get user email to notify
-         emails = self.db.query("""select nazwa_pelna, email2 from users where aktywna='t'""")
-         email_to = [email[0] + ' <' + email[1] + '>' for email in emails]
-
-         body = self.generate_body(template, ids)
 
          print(body)
          # send mail to active users

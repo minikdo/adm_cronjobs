@@ -1,14 +1,21 @@
 from notification_manager import NotificationManager
-
+from backend_service import BackendService
 
 def main():
-    nm = NotificationManager()
+    nm = NotificationManager('expired')
 
-    ids = nm.get_ids("wyl < now()")
-    template = 'expired'
-    subject = 'umowy zakończone'
+    bs = BackendService()
     
-    nm.notify(template, subject, ids)
+    # ids = bs.expired_ids(7)
+    ids = bs.no_photo_ids()
+    
+    email_to = bs.get_active_users()
+    
+    subject = 'umowy zakończone'
+
+    body = nm.generate_body('expired', ids)
+    
+    nm.notify(subject, body, email_to)
     
 
 if __name__ == '__main__':
