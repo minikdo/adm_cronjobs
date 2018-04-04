@@ -17,14 +17,20 @@ class BackendService:
 
     def expired_ids(self, days_before=0):
         return self.db.query(
-            """select id, cena, pow from est where
-            wyl < now() + '{} days'::interval and status=0"""
-            .format(days_before)
+            """select id from est where
+            wyl < now() + '{} days'::interval
+            and status=0""" .format(days_before)
         )
 
     def no_photo_ids(self):
-        return self.db.query("""select id, cena, pow from est where zdjecia=0 
+        return self.db.query("""select id from est where zdjecia=0 
         and status=0""")
+
+    def get_context(self, id):
+        return self.db.query("""select n.nazwa, m.nazwa, e.cena, k.nazwisko
+        from est e, nazwa n, miasto m, kon k
+        where e.nazwa=n.id and e.miasto=m.id and e.id_kon=k.id
+        and id={}""".format(id))
 
     def get_active_users(self):
         # get user email to notify
