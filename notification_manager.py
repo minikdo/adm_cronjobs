@@ -8,8 +8,9 @@ from string import Template
 
 class NotificationManager:
 
-    def __init__(self, template):
+    def __init__(self):
         pass
+
 
     def get_template(self, template):
         try:
@@ -49,7 +50,7 @@ class NotificationManager:
     def notify(self, subject, body, email_to):
 
          # initialize send mail class
-         send_email = SendEmail()
+         # send_email = SendEmail()
 
          print(body)
          # send mail to active users
