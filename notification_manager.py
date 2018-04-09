@@ -50,9 +50,9 @@ class NotificationManager:
     def notify(self, subject, body, email_to):
 
          # initialize send mail class
-         # send_email = SendEmail()
+         send_email = SendEmail()
 
-         print(body)
-         # send mail to active users
-         # send_email.send(email_to, subject, body)
-         # send_email.quit()
+         # print(body)
+         send mail to active users
+         send_email.send(email_to, subject, body)
+         send_email.quit()
