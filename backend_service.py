@@ -22,6 +22,26 @@ class BackendService:
             and status=0""" .format(days_before)
         )
 
+    def photo_count(self):
+        ids = self.db.query("""select est.id,count(est_photo.est_id) from est
+        left join est_photo on est_photo.est_id = est.id group by est.id
+        order by 1""")
+
+        for id in ids:
+             self.db.cur.execute(
+                 "update est set zdjecia={} where id={}".format(id[1],
+                                                                id[0])
+             )
+             self.db.cur2.execute(
+                 "update oferty_est set zdjecia={} where id={}".format(id[1],
+                                                                       id[0])
+             )
+
+        self.db.conn.commit()
+        self.db.conn2.commit()
+
+        return print(ids)
+
     def no_photo_ids(self):
         return self.db.query("""select id from est where zdjecia=0 
         and status=0""")
